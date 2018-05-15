@@ -57,7 +57,7 @@ public class DiffGUI extends Application {
         MenuItem compare = new MenuItem("Compare");
         menuFile.getItems().add(compare);
         RadioMenuItem file = new RadioMenuItem("File");
-        RadioMenuItem folder = new RadioMenuItem("Folder");
+        RadioMenuItem folder = new RadioMenuItem("Directory");
         ToggleGroup tGroup = new ToggleGroup();
         
         
