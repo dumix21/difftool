@@ -2,13 +2,18 @@ package gui;
 
 import java.io.File;
 
+
+
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -66,6 +71,29 @@ class FileViewer {
 		GridPane.setConstraints(rightTextArea, 2, 1, 2, 1);
 		rightTextArea.setPrefSize(window.getWidth()/2-30, 600);
 		grid.getChildren().add(rightTextArea);
+		
+		Button previous = new Button("<< Previous");
+//		GridPane.setConstraints(previous, 0, 2, 2, 1);
+//		grid.getChildren().add(previous);
+		
+		Group bg = new Group();
+		
+		
+		Button next = new Button(" Next >>     ");
+//		GridPane.setConstraints(next, 2, 2, 2, 1);
+//		grid.getChildren().add(next);
+		
+		bg.getChildren().addAll(previous,next);
+		
+		HBox buttonsPane = new HBox();
+		
+		buttonsPane.getChildren().add(previous);
+		buttonsPane.getChildren().add(next);
+		
+		buttonsPane.setAlignment(Pos.CENTER);
+		GridPane.setConstraints(buttonsPane, 0, 2, 4, 1);
+		
+		grid.getChildren().add(buttonsPane);
 		
 		leftPath.setOnAction(new EventHandler<ActionEvent>(){
 
