@@ -6,8 +6,8 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBoxTreeItem;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TreeItem;
 import javafx.scene.layout.GridPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
@@ -28,11 +28,10 @@ class DirectoryViewer {
 		GridPane grid = new GridPane();
 		
 		TreeViewHelper leftHelper = new TreeViewHelper();
-		CheckBoxTreeItem<String> leftParent = new CheckBoxTreeItem<String>();
+		TreeItem<Object> leftParent = new TreeItem<Object>();
 		
 		TreeViewHelper rightHelper = new TreeViewHelper();
-		CheckBoxTreeItem<String> rightParent = new CheckBoxTreeItem<String>();
-		
+		TreeItem<Object> rightParent = new TreeItem<Object>();
 		
 		
 		

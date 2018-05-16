@@ -128,6 +128,15 @@ public class DiffGUI extends Application {
 			
 		});
 		
+		compare.setOnAction(new EventHandler<ActionEvent>() {
+
+			public void handle(ActionEvent event) {
+				// TODO Implement handler for diff generator
+				
+			}
+			
+		});
+		
 	}
 	
 	public static void main(String[] args) {
