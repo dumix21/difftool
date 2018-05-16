@@ -16,7 +16,7 @@ public class TreeViewHelper {
 	        for (File f : file.listFiles()) {
 	            createTree(f, treeItem);
 	        }
-	    } else if (".txt".equals((file.toString().substring(file.toString().lastIndexOf(".") + 1)))) {
+	    } else if ("txt".equals((file.toString().substring(file.toString().lastIndexOf(".") + 1)))) {
 	        parent.getChildren().add(new CheckBoxTreeItem<>(file.getName()));
 	    }
 	}
