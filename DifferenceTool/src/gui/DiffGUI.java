@@ -19,12 +19,6 @@ public class DiffGUI extends Application {
 
 	Stage window;
 	Scene primaryScene;
-	/**
-	 *  Values : true  - for files
-	 *  	     false - for directories
-	 */
-	boolean comparationType;
-	
 	GridPane directoryPane = new GridPane();
 	GridPane filePane = new GridPane();
 	
@@ -89,12 +83,8 @@ public class DiffGUI extends Application {
         	
         });
         
-        
-        
         // By default, the tool is set up for files type
         file.setSelected(true);
-        comparationType=true;
-        
         
         menuOptions.getItems().addAll(file,folder);
         
@@ -107,8 +97,6 @@ public class DiffGUI extends Application {
 		window.setTitle("Diff Tool");
 		window.setScene(primaryScene);
 		window.show();
-		
-		
 		
 		about.setOnAction(new EventHandler<ActionEvent>(){
 

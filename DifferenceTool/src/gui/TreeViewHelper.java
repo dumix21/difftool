@@ -20,23 +20,7 @@ public class TreeViewHelper {
 	public void createTree(File file, TreeItem<Object> parent) {
 	    if (file.isDirectory()) {
 	    	
-	    	javax.swing.Icon icon = FileSystemView.getFileSystemView().getSystemIcon( file );
-
-            BufferedImage bufferedImage = new BufferedImage(
-                icon.getIconWidth(), 
-                icon.getIconHeight(), 
-                BufferedImage.TYPE_INT_ARGB
-            );
-            icon.paintIcon(null, bufferedImage.getGraphics(), 0, 0);
-            
-            Image fxImage = SwingFXUtils.toFXImage(
-                    bufferedImage, null
-                );
-            ImageView imageView = new ImageView(fxImage);
-	    	
-	        TreeItem<Object> treeItem = new TreeItem<>(file.getName(), imageView);
-	        
-//	        treeItem.setExpanded(true);
+	        TreeItem<Object> treeItem = new TreeItem<>(file.getName(), getItemImage(file));
 	        
 	        parent.getChildren().add(treeItem);
 	        
@@ -44,23 +28,9 @@ public class TreeViewHelper {
 	            createTree(f, treeItem);
 	        }
 	    } else 
-	    {
-	    	javax.swing.Icon icon = FileSystemView.getFileSystemView().getSystemIcon( file );
-
-            BufferedImage bufferedImage = new BufferedImage(
-                icon.getIconWidth(), 
-                icon.getIconHeight(), 
-                BufferedImage.TYPE_INT_ARGB
-            );
-            icon.paintIcon(null, bufferedImage.getGraphics(), 0, 0);
-            
-            Image fxImage = SwingFXUtils.toFXImage(
-                    bufferedImage, null
-                );
-            ImageView imageView = new ImageView(fxImage);
+	    {	
 	    	
-	    	
-	    	TreeItem<Object> newItem = new TreeItem<>(file.getName(), imageView);
+	    	TreeItem<Object> newItem = new TreeItem<>(file.getName(), getItemImage(file));
 	    	parent.getChildren().add(newItem);
 	    }
 	}
@@ -68,21 +38,8 @@ public class TreeViewHelper {
 	public void displayTreeView(String inputDirectoryLocation) {
 	    // Creates the root item.
 		File inputFile = new File(inputDirectoryLocation);
-		javax.swing.Icon icon = FileSystemView.getFileSystemView().getSystemIcon( inputFile );
 
-        BufferedImage bufferedImage = new BufferedImage(
-            icon.getIconWidth(), 
-            icon.getIconHeight(), 
-            BufferedImage.TYPE_INT_ARGB
-        );
-        icon.paintIcon(null, bufferedImage.getGraphics(), 0, 0);
-        
-        Image fxImage = SwingFXUtils.toFXImage(
-                bufferedImage, null
-            );
-        ImageView imageView = new ImageView(fxImage);
-        
-	    TreeItem<Object> rootItem = new TreeItem<>(inputDirectoryLocation, imageView);//
+	    TreeItem<Object> rootItem = new TreeItem<>(inputDirectoryLocation, getItemImage(inputFile));
 
 	    // Hides the root item of the tree view.
 	    treeView.setShowRoot(true);
@@ -123,6 +80,23 @@ public class TreeViewHelper {
 		return treeView;
 	}
 	
-	
+	public ImageView getItemImage(File file) {
+		javax.swing.Icon icon = FileSystemView.getFileSystemView().getSystemIcon( file );
+
+        BufferedImage bufferedImage = new BufferedImage(
+            icon.getIconWidth(), 
+            icon.getIconHeight(), 
+            BufferedImage.TYPE_INT_ARGB
+        );
+        icon.paintIcon(null, bufferedImage.getGraphics(), 0, 0);
+        
+        Image fxImage = SwingFXUtils.toFXImage(
+                bufferedImage, null
+            );
+        ImageView imageView = new ImageView(fxImage);
+        
+        return imageView;
+		
+	}
 
 }

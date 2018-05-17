@@ -1,15 +1,10 @@
 package gui;
 
-import java.io.File;
-
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
 import javafx.scene.layout.GridPane;
-import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 
 class DirectoryViewer {
@@ -66,50 +61,15 @@ class DirectoryViewer {
 		GridPane.setConstraints(rightPath, 3, 0);
 		grid.getChildren().add(rightPath);
 		
-		
 		GridPane.setConstraints(rightHelper.getTreeView(), 2, 1, 2, 1);
 		rightHelper.getTreeView().setPrefSize(window.getWidth()/2-30, 600);
 		grid.getChildren().add(rightHelper.getTreeView());
 		
-		leftPath.setOnAction(new EventHandler<ActionEvent>(){
-
-			@Override
-			public void handle(ActionEvent event) {
-				DirectoryChooser chooser = new DirectoryChooser();
-				chooser.setTitle("Select first directory");
-				File defaultDirectory = new File("d:");
-				chooser.setInitialDirectory(defaultDirectory);
-				File selectedDirectory = chooser.showDialog(window);
-
-				leftText.setText(selectedDirectory.getAbsolutePath());
-				
-				
-				leftHelper.createTree(selectedDirectory, leftParent);
-				leftHelper.displayTreeView(selectedDirectory.toString());
-				
-			}
-			
-		});
+		final FileAndDirectoryController leftControler = new FileAndDirectoryController(leftText, leftHelper, window, leftParent);
+		leftPath.setOnAction(leftControler.getHandler());
 		
-		rightPath.setOnAction(new EventHandler<ActionEvent>(){
-
-			@Override
-			public void handle(ActionEvent event) {
-
-				DirectoryChooser chooser = new DirectoryChooser();
-				chooser.setTitle("Select second directory");
-				File defaultDirectory = new File("d:");
-				chooser.setInitialDirectory(defaultDirectory);
-				File selectedDirectory = chooser.showDialog(window);
-
-				rightText.setText(selectedDirectory.getAbsolutePath());
-				
-				
-				rightHelper.createTree(selectedDirectory, rightParent);
-				rightHelper.displayTreeView(selectedDirectory.toString());
-			}
-			
-		});
+		final FileAndDirectoryController rightControler = new FileAndDirectoryController(rightText, rightHelper, window, rightParent);
+		rightPath.setOnAction(rightControler.getHandler());
 		
 		return grid;
 	}
