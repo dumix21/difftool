@@ -1,11 +1,5 @@
 package gui;
 
-import java.io.File;
-
-
-
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -14,7 +8,6 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 class FileViewer {
@@ -31,7 +24,6 @@ class FileViewer {
 	
 	public GridPane getFileView(Stage window) {
 		
-		TextFileReader reader = new TextFileReader();
 		TextArea leftTextArea = new TextArea();
 		TextArea rightTextArea = new TextArea();
 		
@@ -73,15 +65,9 @@ class FileViewer {
 		grid.getChildren().add(rightTextArea);
 		
 		Button previous = new Button("<< Previous");
-//		GridPane.setConstraints(previous, 0, 2, 2, 1);
-//		grid.getChildren().add(previous);
-		
 		Group bg = new Group();
 		
-		
 		Button next = new Button(" Next >>     ");
-//		GridPane.setConstraints(next, 2, 2, 2, 1);
-//		grid.getChildren().add(next);
 		
 		bg.getChildren().addAll(previous,next);
 		
@@ -95,41 +81,11 @@ class FileViewer {
 		
 		grid.getChildren().add(buttonsPane);
 		
-		leftPath.setOnAction(new EventHandler<ActionEvent>(){
-
-			@Override
-			public void handle(ActionEvent event) {
-				FileChooser leftFile;
-				leftFile = new FileChooser();
-				File file = leftFile.showOpenDialog(window);
-				leftText.setText(file.getAbsolutePath());
-				
-				leftTextArea.setText(null);
-				for(String s:reader.read(file)) {
-					leftTextArea.appendText(s+"\n");
-				}
-				
-			}
-			
-		});
+		FileAndDirectoryController leftController = new FileAndDirectoryController(leftText, leftTextArea, window);
+		leftPath.setOnAction(leftController.getHandler());
 		
-		rightPath.setOnAction(new EventHandler<ActionEvent>(){
-
-			@Override
-			public void handle(ActionEvent event) {
-
-				FileChooser rightFile;
-				rightFile = new FileChooser();
-				File file = rightFile.showOpenDialog(window);
-				rightText.setText(file.getAbsolutePath());
-				
-				rightTextArea.setText(null);
-				for(String s:reader.read(file)) {
-					rightTextArea.appendText(s+"\n");
-				}
-			}
-			
-		});
+		FileAndDirectoryController rightController = new FileAndDirectoryController(rightText, rightTextArea, window);
+		leftPath.setOnAction(rightController.getHandler());
 		
 		
 		
