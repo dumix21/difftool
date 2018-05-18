@@ -1,5 +1,7 @@
 package gui;
 
+import java.io.IOException;
+
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -11,6 +13,7 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioMenuItem;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.TreeView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
@@ -21,6 +24,9 @@ public class DiffGUI extends Application {
 	Scene primaryScene;
 	GridPane directoryPane = new GridPane();
 	GridPane filePane = new GridPane();
+	DirectoryViewer directoryView;
+	
+	boolean type = false; // For file false; For directories true
 	
 	
 	public void start(Stage primaryStage) throws Exception {
@@ -57,6 +63,7 @@ public class DiffGUI extends Application {
 			public void handle(ActionEvent event) {
 				
 				layout.getChildren().remove(directoryPane);
+				type = false;
 				
 				FileViewer fileView = FileViewer.getInstance();
 				filePane = fileView.getFileView(window);
@@ -73,8 +80,9 @@ public class DiffGUI extends Application {
 			public void handle(ActionEvent event) {
 				
 				layout.getChildren().remove(filePane);
+				type = true;
 				
-				DirectoryViewer directoryView = DirectoryViewer.getInstance();
+				directoryView = DirectoryViewer.getInstance();
 				directoryPane = directoryView.getDirectoryView(window);
 				
 				layout.setCenter(directoryPane);
@@ -120,6 +128,20 @@ public class DiffGUI extends Application {
 
 			public void handle(ActionEvent event) {
 				// TODO Implement handler for diff generator
+				DirectoryViewer dw = DirectoryViewer.getInstance();
+				if(type&&((dw.getFirstDir().isDirectory()&&(dw.getLastDir().isDirectory())))) {
+					TreeView<Object> tv1 = directoryView.getLeftHelper().getTreeView();
+					TreeView<Object> tv2 = directoryView.getRightHelper().getTreeView();
+					DirectoriesComaprison compare = new DirectoriesComaprison(dw.getFirstDir(), dw.getLastDir(), tv1, tv2);
+					try
+					{
+						compare.getDiff(compare.getLeftDir(),compare.getRightDir());
+					}
+					catch(IOException ie)
+					{
+						ie.printStackTrace();
+					}
+				}
 				
 			}
 			

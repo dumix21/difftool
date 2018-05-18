@@ -21,7 +21,6 @@ public class TreeViewHelper {
 	    if (file.isDirectory()) {
 	    	
 	        TreeItem<Object> treeItem = new TreeItem<>(file.getName(), getItemImage(file));
-	        
 	        parent.getChildren().add(treeItem);
 	        
 	        for (File f : file.listFiles()) {
@@ -35,6 +34,11 @@ public class TreeViewHelper {
 	    }
 	}
 	
+	public void setTreeView(TreeView<Object> treeView) {
+		this.treeView = treeView;
+		treeView.refresh();
+	}
+
 	public void displayTreeView(String inputDirectoryLocation) {
 	    // Creates the root item.
 		File inputFile = new File(inputDirectoryLocation);
