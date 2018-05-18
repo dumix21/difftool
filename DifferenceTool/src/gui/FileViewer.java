@@ -85,7 +85,7 @@ class FileViewer {
 		leftPath.setOnAction(leftController.getHandler());
 		
 		FileAndDirectoryController rightController = new FileAndDirectoryController(rightText, rightTextArea, window);
-		leftPath.setOnAction(rightController.getHandler());
+		rightPath.setOnAction(rightController.getHandler());
 		
 		
 		

@@ -14,20 +14,39 @@ import javafx.stage.Stage;
 public class FileAndDirectoryController {
 
 		private EventHandler<ActionEvent> EH;
+		File selectedDirectory;
 		
+		public File getSelectedDirectory() {
+			return selectedDirectory;
+		}
+
+		public void setSelectedDirectory(File selectedDirectory) {
+			this.selectedDirectory = selectedDirectory;
+		}
+
 		//Get path handler for directories
 		public FileAndDirectoryController(TextField text, TreeViewHelper helper, Stage window,TreeItem<Object> parent) {
 			EH = new EventHandler<ActionEvent>() {
 
 				@Override
 				public void handle(ActionEvent event) {
+					DirectoryViewer dw = DirectoryViewer.getInstance();
+					String ob = event.getSource().toString();
+					
 					DirectoryChooser chooser = new DirectoryChooser();
-					File selectedDirectory = chooser.showDialog(window);
+					selectedDirectory = chooser.showDialog(window);
 
 					text.setText(selectedDirectory.getAbsolutePath());
 					
 					helper.createTree(selectedDirectory, parent);
 					helper.displayTreeView(selectedDirectory.toString());
+					
+					if(ob.contains("Get path1")) {
+						dw.setFirstDir(new File(dw.getLeftText().getText()));
+					}
+					else {
+						dw.setLastDir(new File(dw.getRightText().getText()));
+					}
 					
 				}
 				
