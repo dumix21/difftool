@@ -66,7 +66,7 @@ public class DiffGUI extends Application {
 				type = false;
 				
 				FileViewer fileView = FileViewer.getInstance();
-				filePane = fileView.getFileView(window);
+				filePane = fileView.getDefaultFileView(window);
 				
 				layout.setCenter(filePane);
 				
@@ -97,7 +97,7 @@ public class DiffGUI extends Application {
         menuOptions.getItems().addAll(file,folder);
         
         FileViewer fileView = FileViewer.getInstance();
-		filePane = fileView.getFileView(window);
+		filePane = fileView.getDefaultFileView(window);
 		
 		layout.setCenter(filePane);
         
@@ -141,6 +141,10 @@ public class DiffGUI extends Application {
 					{
 						ie.printStackTrace();
 					}
+				}
+				else if(!type) {					
+					filePane = FileViewer.getInstance().changePaneToDiffs(window);					
+					layout.setCenter(filePane);					
 				}
 				
 			}
