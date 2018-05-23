@@ -1,8 +1,11 @@
 package gui;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
@@ -25,88 +28,85 @@ public class DiffGUI extends Application {
 	GridPane directoryPane = new GridPane();
 	GridPane filePane = new GridPane();
 	DirectoryViewer directoryView;
-	
+
 	boolean type = false; // For file false; For directories true
-	
-	
+
 	public void start(Stage primaryStage) throws Exception {
 		window = primaryStage;
 		window.setMaximized(true);
-		
+
 		BorderPane layout = new BorderPane();
-		primaryScene=new Scene(layout);
-		
+		primaryScene = new Scene(layout);
+
 		MenuBar menuBar = new MenuBar();
-        // --- Menu File
-        Menu menuFile = new Menu("File");
-        Menu menuOptions = new Menu("Options");
-        Menu menuHelp = new Menu("Help");
-        MenuItem about = new MenuItem("About");
-        menuHelp.getItems().add(about);
-        
-        menuBar.getMenus().addAll(menuFile, menuOptions, menuHelp);
-        MenuItem compare = new MenuItem("Compare");
-        menuFile.getItems().add(compare);
-        RadioMenuItem file = new RadioMenuItem("File");
-        RadioMenuItem folder = new RadioMenuItem("Directory");
-        ToggleGroup tGroup = new ToggleGroup();
-        
-        
-        layout.setTop(menuBar);
-        
-        file.setToggleGroup(tGroup);
-        folder.setToggleGroup(tGroup);
-        
-        file.setOnAction(new EventHandler<ActionEvent>(){
+		// --- Menu File
+		Menu menuFile = new Menu("File");
+		Menu menuOptions = new Menu("Options");
+		Menu menuHelp = new Menu("Help");
+		MenuItem about = new MenuItem("About");
+		menuHelp.getItems().add(about);
+
+		menuBar.getMenus().addAll(menuFile, menuOptions, menuHelp);
+		MenuItem compare = new MenuItem("Compare");
+		menuFile.getItems().add(compare);
+		RadioMenuItem file = new RadioMenuItem("File");
+		RadioMenuItem folder = new RadioMenuItem("Directory");
+		ToggleGroup tGroup = new ToggleGroup();
+
+		layout.setTop(menuBar);
+
+		file.setToggleGroup(tGroup);
+		folder.setToggleGroup(tGroup);
+
+		file.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
 			public void handle(ActionEvent event) {
-				
+
 				layout.getChildren().remove(directoryPane);
 				type = false;
-				
+
 				FileViewer fileView = FileViewer.getInstance();
 				filePane = fileView.getDefaultFileView(window);
-				
+
 				layout.setCenter(filePane);
-				
+
 			}
-        	
-        });
-        
-        folder.setOnAction(new EventHandler<ActionEvent>(){
+
+		});
+
+		folder.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
 			public void handle(ActionEvent event) {
-				
+
 				layout.getChildren().remove(filePane);
 				type = true;
-				
+
 				directoryView = DirectoryViewer.getInstance();
 				directoryPane = directoryView.getDirectoryView(window);
-				
+
 				layout.setCenter(directoryPane);
-				
+
 			}
-        	
-        });
-        
-        // By default, the tool is set up for files type
-        file.setSelected(true);
-        
-        menuOptions.getItems().addAll(file,folder);
-        
-        FileViewer fileView = FileViewer.getInstance();
+
+		});
+
+		// By default, the tool is set up for files type
+		file.setSelected(true);
+
+		menuOptions.getItems().addAll(file, folder);
+
+		FileViewer fileView = FileViewer.getInstance();
 		filePane = fileView.getDefaultFileView(window);
-		
+
 		layout.setCenter(filePane);
-        
-		
+
 		window.setTitle("Diff Tool");
 		window.setScene(primaryScene);
 		window.show();
-		
-		about.setOnAction(new EventHandler<ActionEvent>(){
+
+		about.setOnAction(new EventHandler<ActionEvent>() {
 
 			public void handle(ActionEvent event) {
 				Alert alert = new Alert(AlertType.INFORMATION);
@@ -119,42 +119,63 @@ public class DiffGUI extends Application {
 						+ "\nmanually.");
 
 				alert.showAndWait();
-				
+
 			}
-			
+
 		});
-		
+
 		compare.setOnAction(new EventHandler<ActionEvent>() {
 
 			public void handle(ActionEvent event) {
-				// TODO Implement handler for diff generator
 				DirectoryViewer dw = DirectoryViewer.getInstance();
-				if(type&&((dw.getFirstDir().isDirectory()&&(dw.getLastDir().isDirectory())))) {
+				if (type && ((dw.getFirstDir().isDirectory() && (dw.getLastDir().isDirectory())))) {
 					TreeView<Object> tv1 = directoryView.getLeftHelper().getTreeView();
 					TreeView<Object> tv2 = directoryView.getRightHelper().getTreeView();
-					DirectoriesComaprison compare = new DirectoriesComaprison(dw.getFirstDir(), dw.getLastDir(), tv1, tv2);
-					try
-					{
-						compare.getDiff(compare.getLeftDir(),compare.getRightDir());
+					DirectoriesComaprison compare = new DirectoriesComaprison(dw.getFirstDir(), dw.getLastDir(), tv1,
+							tv2);
+					try {
+						Platform.runLater(new Runnable() {
+							@Override
+							public void run() {
+								try {
+									compare.getDiff(compare.getLeftDir(), compare.getRightDir());
+								} catch (IOException e) {
+									e.printStackTrace();
+								}
+								
+								HashMap<String, String> newMap = compare.getMapDiff();
+
+								DirectoriesDifferences dd = new DirectoriesDifferences();
+								TreeViewHelper treeHelper = new TreeViewHelper();
+								TreeView<Object> auxView = directoryView.rightHelper.getTreeView();
+								
+								treeHelper.setTreeView((dd.markDifferences(auxView, newMap,
+										new File(directoryView.getRightText().toString()))));
+								dw.setRightHelper(treeHelper);
+
+								auxView = directoryView.leftHelper.getTreeView();
+								treeHelper.setTreeView(dd.markDifferences(auxView, newMap,
+										new File(directoryView.getLeftText().toString())));
+								dw.setLeftHelper(treeHelper);
+							}
+						});
+					} catch (Exception e) {
+						e.printStackTrace();
 					}
-					catch(IOException ie)
-					{
-						ie.printStackTrace();
-					}
+
+				} else if (!type) {
+					filePane = FileViewer.getInstance().changePaneToDiffs(window);
+					layout.setCenter(filePane);
 				}
-				else if(!type) {					
-					filePane = FileViewer.getInstance().changePaneToDiffs(window);					
-					layout.setCenter(filePane);					
-				}
-				
+
 			}
-			
+
 		});
-		
+
 	}
-	
+
 	public static void main(String[] args) {
 		launch(args);
 	}
-	
+
 }
