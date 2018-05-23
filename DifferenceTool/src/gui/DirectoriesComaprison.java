@@ -15,12 +15,13 @@ import javafx.scene.control.TreeView;
 
 public class DirectoriesComaprison 
 {
-	//This can be any folder locations which you want to compare
-	
 	File leftDir;
 	File rightDir;
 	TreeView<Object> leftTV;
 	TreeView<Object> rightTV;
+	
+	String[] matchFiles = {"only in", "different", "identical"};
+	HashMap<String, String> mapDiff = new HashMap<>();
 	
 	TreeItem<Object> leftRoot;
 	TreeItem<Object> rightRoot;
@@ -79,8 +80,6 @@ public class DirectoriesComaprison
 		if(fileList1.length < fileList2.length)
 		{
 			map1 = new HashMap<String, File>();
-			System.out.println(fileList1.toString());
-//			map1.put(fileList1.toString(),dirA);
 			for(int i=0;i<fileList1.length;i++)
 			{
 				map1.put(fileList1[i].getName(),fileList1[i]);
@@ -91,7 +90,6 @@ public class DirectoriesComaprison
 		else
 		{
 			map1 = new HashMap<String, File>();
-//			map1.put(fileList2.toString(),dirB);
 			for(int i=0;i<fileList2.length;i++)
 			{
 				map1.put(fileList2[i].getName(),fileList2[i]);
@@ -111,9 +109,6 @@ public class DirectoriesComaprison
 			{
 				if(fComp.isDirectory())
 				{
-//					if(fComp.getName().equals(fName)){
-//						System.out.println(fileArr.getName()+"\t\t"+"identical");
-//					}
 					getDiff(fileArr[i], fComp);
 				}
 				else
@@ -122,21 +117,17 @@ public class DirectoriesComaprison
 					String cSum2 = checksum(fComp);
 					if(!cSum1.equals(cSum2))
 					{
-						System.out.println(fileArr[i].getName()+"\t\t"+ "different");
-						
+//						System.out.println(fileArr[i].getName()+"\t\t"+ "different");
+						if(!mapDiff.containsKey(fileArr[i].getName())) {
+							mapDiff.put(fileArr[i].getName(), matchFiles[1]);
+						}
 					}
 					else
 					{
-						System.out.println(fileArr[i].getName()+"\t\t"+"identical");
-//						int ind=0;
-//						for(TreeItem<Object> ti:leftRoot.getChildren()) {
-//							TreeItem<Object> item = leftRoot.getChildren().get(ind);
-//							if(item.getValue().equals(fileArr)) {
-//								leftRoot.getChildren().get(ind).setValue(fileArr[i].getName()+"\t\t"+"identical");
-//								
-//							}
-//								ind++;
-//						}
+//						System.out.println(fileArr[i].getName()+"\t\t"+"identical");
+						if(!mapDiff.containsKey(fileArr[i].getName())) {
+							mapDiff.put(fileArr[i].getName(), matchFiles[2]);
+						}
 					}
 				}
 			}
@@ -149,7 +140,10 @@ public class DirectoriesComaprison
 				}
 				else
 				{
-					System.out.println(fileArr[i].getName()+"\t\t"+"only in "+fileArr[i].getParent());
+//					System.out.println(fileArr[i].getName()+"\t\t"+"only in "+fileArr[i].getParent());
+					if(!mapDiff.containsKey(fileArr[i].getName())) {
+						mapDiff.put(fileArr[i].getName(), matchFiles[0]+" "+fileArr[i].getParent());
+					}
 				}
 			}
 		}
@@ -166,11 +160,18 @@ public class DirectoriesComaprison
 			}
 			else
 			{
-				System.out.println(fileFrmMap.getName() +"\t\t"+"only in "+ fileFrmMap.getParent());
+//				System.out.println(fileFrmMap.getName() +"\t\t"+"only in "+ fileFrmMap.getParent());
+				if(!mapDiff.containsKey(fileFrmMap.getName())) {
+					mapDiff.put(fileFrmMap.getName(), matchFiles[0]+" "+fileFrmMap.getParent());
+				}
 			}
 		}
 	}
 	
+	public HashMap<String, String> getMapDiff() {
+		return mapDiff;
+	}
+
 	public void traverseDirectory(File dir)
 	{
 		File[] list = dir.listFiles();
@@ -182,7 +183,10 @@ public class DirectoriesComaprison
 			}
 			else
 			{
-				System.out.println(list[k].getName() +"\t\t"+"only in "+ list[k].getParent());
+//				System.out.println(list[k].getName() +"\t\t"+"only in "+ list[k].getParent());
+				if(!mapDiff.containsKey(list[k].getName())) {
+					mapDiff.put(list[k].getName(), matchFiles[0]+" "+list[k].getParent());
+				}
 			}
 		}
 	}
