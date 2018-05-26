@@ -7,6 +7,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 
+ * @author Marius
+ *
+ * Used to read a file
+ */
 public class TextFileReader {
 	
 	public List<String> read(File file){

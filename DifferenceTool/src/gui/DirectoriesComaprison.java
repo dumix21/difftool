@@ -77,6 +77,12 @@ public class DirectoriesComaprison
 		Arrays.sort(fileList1);
 		Arrays.sort(fileList2);
 		HashMap<String, File> map1;
+		
+		/**
+		 * Creating a map based on the shortest number of files from an directory
+		 * The shortest map is used because it's faster to compare fewer file with more
+		 * and set the not found ones with ONLY IN value
+		 */
 		if(fileList1.length < fileList2.length)
 		{
 			map1 = new HashMap<String, File>();
@@ -105,8 +111,16 @@ public class DirectoriesComaprison
 			String fName = fileArr[i].getName();
 			File fComp = map.get(fName);
 			map.remove(fName);
+			/**
+			 * First branch  - if the map has entries
+			 * Second branch - if the map is empty
+			 */
 			if(fComp!=null)
 			{
+				/**
+				 * In case of directory in directory, a new map will be created to store
+				 * the files and values
+				 */
 				if(fComp.isDirectory())
 				{
 					getDiff(fileArr[i], fComp);
@@ -115,6 +129,10 @@ public class DirectoriesComaprison
 				{
 					String cSum1 = checksum(fileArr[i]);
 					String cSum2 = checksum(fComp);
+					/**
+					 * Checking if there are two file with same name and content
+					 * Or if the content is different
+					 */
 					if(!cSum1.equals(cSum2))
 					{
 //						System.out.println(fileArr[i].getName()+"\t\t"+ "different");
@@ -133,6 +151,11 @@ public class DirectoriesComaprison
 			}
 			else
 			{
+				/**
+				 * Branch used when the map is empty
+				 * 
+				 * In case of founding a directory, will be traversed
+				 */
 				if(fileArr[i].isDirectory())
 				{
 					traverseDirectory(fileArr[i]);
@@ -140,6 +163,9 @@ public class DirectoriesComaprison
 				}
 				else
 				{
+					/**
+					 * All the files will be set with value ONLY IN
+					 */
 //					System.out.println(fileArr[i].getName()+"\t\t"+"only in "+fileArr[i].getParent());
 					if(!mapDiff.containsKey(fileArr[i].getName())) {
 						mapDiff.put(fileArr[i].getName(), matchFiles[0]+" "+fileArr[i].getParent());

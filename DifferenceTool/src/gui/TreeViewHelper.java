@@ -17,6 +17,14 @@ import javafx.util.StringConverter;
 
 public class TreeViewHelper {
 	TreeView<Object> treeView = new TreeView<>();
+	
+	/**
+	 * 
+	 * @param file
+	 * @param parent
+	 * 
+	 * Recursive function used to traverse all directories/files from the parent directory
+	 */
 	public void createTree(File file, TreeItem<Object> parent) {
 	    if (file.isDirectory()) {
 	    	
@@ -40,15 +48,21 @@ public class TreeViewHelper {
 	}
 
 	public void displayTreeView(String inputDirectoryLocation) {
-	    // Creates the root item.
+	    /**
+	     * Creates the root item.
+	     */
 		File inputFile = new File(inputDirectoryLocation);
 
 	    TreeItem<Object> rootItem = new TreeItem<>(inputDirectoryLocation, getItemImage(inputFile));
 
-	    // Hides the root item of the tree view.
+	    /**
+	     * Show the root item of the tree view.
+	     */
 	    treeView.setShowRoot(true);
 
-	    // Creates the cell factory.
+	    /**
+	     * Creates the cell factory.
+	     */
 	    treeView.setCellFactory(new Callback<TreeView<Object>, TreeCell<Object>>() {
 	        @Override
 	        public TreeCell<Object> call(TreeView<Object> p) {
@@ -67,11 +81,15 @@ public class TreeViewHelper {
 	        }
 	    });
 
-	    // Get a list of files.
+	    /**
+	     * Get a list of files.
+	     */
 	    File fileInputDirectoryLocation = new File(inputDirectoryLocation);
 	    File fileList[] = fileInputDirectoryLocation.listFiles();
 
-	    // create tree
+	    /**
+	     * Create tree
+	     */
 	    for (File file : fileList) {
 	        createTree(file, rootItem);
 	    }
@@ -84,6 +102,12 @@ public class TreeViewHelper {
 		return treeView;
 	}
 	
+	/**
+	 * 
+	 * @param file
+	 * @return
+	 * This function returns an ImageView  which represents the icon of a specified file
+	 */
 	public ImageView getItemImage(File file) {
 		javax.swing.Icon icon = FileSystemView.getFileSystemView().getSystemIcon( file );
 
