@@ -27,8 +27,24 @@ public class DirectoriesDifferences {
 		return tree;
 	}
 	
+	/**
+	 * 
+	 * @param parent
+	 * @param differencesMap
+	 * 
+	 * Recursive function used to traverse all directories/files from the parent directory
+	 */
 	public void diffTree(TreeItem<Object> parent, HashMap<String, String> differencesMap) {
+		/**
+		 * This function is used only for showing files differences
+		 *  Leaf = File
+		 */
 		if(parent.isLeaf()) {
+			
+			/**
+			 * A new graphic will be set depending of value map entry
+			 */
+			
 			String type = differencesMap.get(parent.getValue());
 			if(type.equals("identical")){
 				ImageView img = new ImageView(new Image("ok.png"));

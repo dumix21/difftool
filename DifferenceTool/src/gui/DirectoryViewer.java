@@ -16,6 +16,11 @@ class DirectoryViewer {
 	File firstDir;
 	File lastDir;
 	
+	/**
+	 * 
+	 * @return
+	 * This two getters are used handle the event
+	 */
 	public Button getLeftPath() {
 		return leftPath;
 	}
@@ -100,12 +105,18 @@ class DirectoryViewer {
 		return directory_instance;
 	}
 	
+	/**
+	 * 
+	 * @param window
+	 * @return
+	 * This function returns a pane which contains :
+	 * 1. Two button for getting the paths
+	 * 2. Two text fields in which is set the corresponding path
+	 * 3. Two trees for representing the parent directories
+	 */
 	public GridPane getDirectoryView(Stage window) {
+		
 		GridPane grid = new GridPane();
-		
-
-		
-		
 		
 		grid.setPadding(new Insets(10,10,10,10));
 		grid.setVgap(8);
@@ -142,6 +153,9 @@ class DirectoryViewer {
 		rightHelper.getTreeView().setPrefSize(window.getWidth()/2-30, 600);
 		grid.getChildren().add(rightHelper.getTreeView());
 		
+		/**
+		 * Event handlers for each button
+		 */
 		final FileAndDirectoryController leftControler = new FileAndDirectoryController(leftText, leftHelper, window, leftParent);
 		leftPath.setOnAction(leftControler.getHandler());
 		

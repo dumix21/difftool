@@ -117,6 +117,15 @@ class FileViewer {
 		return grid;
 	}
 	
+	/**
+	 * 
+	 * @param window
+	 * @return
+	 * This function returns a pane which contains :
+	 * 1. Two button for getting the paths
+	 * 2. Two text fields in which is set the corresponding path
+	 * 3. Two text areas for showing corresponding texts
+	 */
 	private GridPane getInputsViewState(Stage window) {
 		leftTextArea = new TextArea();
 		rightTextArea = new TextArea();
@@ -169,6 +178,9 @@ class FileViewer {
 		
 		grid.getChildren().add(buttonsPane);
 		
+		/**
+		 * Event handler for each button
+		 */
 		FileAndDirectoryController leftController = new FileAndDirectoryController(leftText, leftTextArea, window);
 		leftPath.setOnAction(leftController.getHandler());
 		
@@ -189,7 +201,7 @@ class FileViewer {
 		initialize();
 		viewState = ViewState.SHOW_DIFFS;
 		
-		//Compute Diffs
+		//Compute Differences
 		leftOutput = new TextFlow();
 		rightOutput = new TextFlow();
 		aggregateOutout = new TextFlow();

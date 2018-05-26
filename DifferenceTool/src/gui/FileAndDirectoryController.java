@@ -11,8 +11,13 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+/**
+ * 
+ * @author Marius
+ *  class used event handlers for files/directories comparison
+ */
 public class FileAndDirectoryController {
-
+	
 		private EventHandler<ActionEvent> EH;
 		File selectedDirectory;
 		
@@ -23,8 +28,16 @@ public class FileAndDirectoryController {
 		public void setSelectedDirectory(File selectedDirectory) {
 			this.selectedDirectory = selectedDirectory;
 		}
-
-		//Get path handler for directories
+		
+		/**
+		 * 
+		 * @param text
+		 * @param helper
+		 * @param window
+		 * @param parent
+		 * 
+		 * Handler for directories
+		 */
 		public FileAndDirectoryController(TextField text, TreeViewHelper helper, Stage window,TreeItem<Object> parent) {
 			EH = new EventHandler<ActionEvent>() {
 
@@ -53,7 +66,14 @@ public class FileAndDirectoryController {
 			};
 		}
 		
-		//Get path handler for files
+		/**
+		 * 
+		 * @param text
+		 * @param textArea
+		 * @param window
+		 * 
+		 * Handler for files
+		 */
 		public FileAndDirectoryController(TextField text, TextArea textArea, Stage window) {
 			EH = new EventHandler<ActionEvent>() {
 
