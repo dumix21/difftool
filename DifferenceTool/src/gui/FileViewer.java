@@ -43,6 +43,26 @@ class FileViewer {
 	private TextFlow aggregateOutout;
 	
 
+	TextField leftText = new TextField();
+	TextField rightText = new TextField();
+	
+
+	public TextField getLeftText() {
+		return leftText;
+	}
+
+	public void setLeftText(String leftText) {
+		this.leftText = new TextField(leftText);
+	}
+
+	public TextField getRightText() {
+		return rightText;
+	}
+
+	public void setRightText(String rightText) {
+		this.rightText = new TextField(rightText);
+	}
+
 	private FileViewer() {
 		//By default, show text inputs
 		viewState = ViewState.SHOW_INPUTS;		
@@ -130,7 +150,6 @@ class FileViewer {
 		leftTextArea = new TextArea();
 		rightTextArea = new TextArea();
 		
-		final TextField leftText = new TextField();
 		leftText.setPromptText("Introduce the path here");
 		leftText.setPrefColumnCount(52);
 		leftText.getText();
@@ -146,7 +165,7 @@ class FileViewer {
 		leftTextArea.setPrefSize(window.getWidth()/2-30, 600);
 		
 		
-		final TextField rightText = new TextField();
+		
 		rightText.setPromptText("Introduce the path here");
 		rightText.setPrefColumnCount(52);
 		rightText.getText();
@@ -186,6 +205,12 @@ class FileViewer {
 		
 		FileAndDirectoryController rightController = new FileAndDirectoryController(rightText, rightTextArea, window);
 		rightPath.setOnAction(rightController.getHandler());		
+		
+		FileAndDirectoryController leftLink = new FileAndDirectoryController("left", window, leftTextArea);
+		leftText.setOnKeyPressed(leftLink.getKeyHandler());
+		
+		FileAndDirectoryController rightLink = new FileAndDirectoryController("right", window, rightTextArea);
+		rightText.setOnKeyPressed(rightLink.getKeyHandler());
 		
 		return grid;
 	}
