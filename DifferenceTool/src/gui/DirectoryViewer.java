@@ -70,8 +70,20 @@ class DirectoryViewer {
 	TreeViewHelper rightHelper = new TreeViewHelper();
 	TreeItem<Object> rightParent = new TreeItem<Object>();
 	
-	final TextField rightText = new TextField("");
-	final TextField leftText = new TextField("");
+	public void setLeftPath(Button leftPath) {
+		this.leftPath = leftPath;
+	}
+
+	public void setLeftText(String leftText) {
+		this.leftText = new TextField(leftText);
+	}
+	
+	public void setRightText(String rightText) {
+		this.rightText = new TextField(rightText);
+	}
+
+	TextField rightText = new TextField("");
+	TextField leftText = new TextField("");
 	
 	public TextField getRightText() {
 		return rightText;
@@ -162,6 +174,11 @@ class DirectoryViewer {
 		final FileAndDirectoryController rightControler = new FileAndDirectoryController(rightText, rightHelper, window, rightParent);
 		rightPath.setOnAction(rightControler.getHandler());
 		
+		final FileAndDirectoryController leftCopy = new FileAndDirectoryController("left", leftHelper, window, leftParent);
+		leftText.setOnKeyPressed(leftCopy.getKeyHandler());
+		
+		final FileAndDirectoryController rightCopy = new FileAndDirectoryController("right", rightHelper, window, rightParent);
+		rightText.setOnKeyPressed(rightCopy.getKeyHandler());
 		
 		return grid;
 	}
