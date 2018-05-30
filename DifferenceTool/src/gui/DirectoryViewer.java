@@ -3,10 +3,16 @@ package gui;
 import java.io.File;
 
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 class DirectoryViewer {
@@ -16,6 +22,37 @@ class DirectoryViewer {
 	File firstDir;
 	File lastDir;
 	
+	final Label label = new Label("Load files:");
+	final Button startButton = new Button("Start");
+    ProgressBar progressBar = new ProgressBar(0);
+    ProgressIndicator progressIndicator = new ProgressIndicator(0);
+    Label statusLabel = new Label();
+    
+	
+	public ProgressBar getProgressBar() {
+		return progressBar;
+	}
+
+	public void setProgressBar(final ProgressBar progressBar) {
+		this.progressBar = progressBar;
+	}
+
+	public ProgressIndicator getProgressIndicator() {
+		return progressIndicator;
+	}
+
+	public void setProgressIndicator(final ProgressIndicator progressIndicator) {
+		this.progressIndicator = progressIndicator;
+	}
+
+	public Label getStatusLabel() {
+		return statusLabel;
+	}
+
+	public void setStatusLabel(final Label statusLabel) {
+		this.statusLabel = statusLabel;
+	}
+
 	/**
 	 * 
 	 * @return
@@ -36,7 +73,7 @@ class DirectoryViewer {
 		return leftHelper;
 	}
 
-	public void setLeftHelper(TreeViewHelper leftHelper) {
+	public void setLeftHelper(final TreeViewHelper leftHelper) {
 		this.leftHelper = leftHelper;
 	}
 
@@ -44,7 +81,7 @@ class DirectoryViewer {
 		return leftParent;
 	}
 
-	public void setLeftParent(TreeItem<Object> leftParent) {
+	public void setLeftParent(final TreeItem<Object> leftParent) {
 		this.leftParent = leftParent;
 	}
 
@@ -52,7 +89,7 @@ class DirectoryViewer {
 		return rightHelper;
 	}
 
-	public void setRightHelper(TreeViewHelper rightHelper) {
+	public void setRightHelper(final TreeViewHelper rightHelper) {
 		this.rightHelper = rightHelper;
 	}
 
@@ -60,7 +97,7 @@ class DirectoryViewer {
 		return rightParent;
 	}
 
-	public void setRightParent(TreeItem<Object> rightParent) {
+	public void setRightParent(final TreeItem<Object> rightParent) {
 		this.rightParent = rightParent;
 	}
 
@@ -70,15 +107,15 @@ class DirectoryViewer {
 	TreeViewHelper rightHelper = new TreeViewHelper();
 	TreeItem<Object> rightParent = new TreeItem<Object>();
 	
-	public void setLeftPath(Button leftPath) {
+	public void setLeftPath(final Button leftPath) {
 		this.leftPath = leftPath;
 	}
 
-	public void setLeftText(String leftText) {
+	public void setLeftText(final String leftText) {
 		this.leftText = new TextField(leftText);
 	}
 	
-	public void setRightText(String rightText) {
+	public void setRightText(final String rightText) {
 		this.rightText = new TextField(rightText);
 	}
 
@@ -97,7 +134,7 @@ class DirectoryViewer {
 		return firstDir;
 	}
 
-	public void setFirstDir(File firstDir) {
+	public void setFirstDir(final File firstDir) {
 		this.firstDir = firstDir;
 	}
 
@@ -105,7 +142,7 @@ class DirectoryViewer {
 		return lastDir;
 	}
 
-	public void setLastDir(File lastDir) {
+	public void setLastDir(final File lastDir) {
 		this.lastDir = lastDir;
 	}
 
@@ -126,7 +163,7 @@ class DirectoryViewer {
 	 * 2. Two text fields in which is set the corresponding path
 	 * 3. Two trees for representing the parent directories
 	 */
-	public GridPane getDirectoryView(Stage window) {
+	public GridPane getDirectoryView(final Stage window) {
 		
 		GridPane grid = new GridPane();
 		
@@ -136,7 +173,8 @@ class DirectoryViewer {
 		
 		
 		leftText.setPromptText("Introduce the path here");
-		leftText.setPrefColumnCount(52);
+		leftText.setMaxWidth(window.getWidth()/2 - 102);
+		leftText.setMinWidth(window.getWidth()/2 - 102);
 		leftText.getText();
 		GridPane.setConstraints(leftText, 0, 0);
 		grid.getChildren().add(leftText);
@@ -147,12 +185,12 @@ class DirectoryViewer {
 		
 		GridPane.setConstraints(leftHelper.getTreeView(), 0, 1, 2, 1);
 		grid.getChildren().add(leftHelper.getTreeView());
-		leftHelper.getTreeView().setPrefSize(window.getWidth()/2-30, 600);
-		
-		
+		leftHelper.getTreeView().setPrefSize(window.getWidth()/2-30, window.getHeight()-150);
 		
 		rightText.setPromptText("Introduce the path here");
-		rightText.setPrefColumnCount(52);
+//		rightText.setPrefColumnCount(52);
+		rightText.setMinWidth(window.getWidth()/2 - 102);
+		rightText.setMaxWidth(window.getWidth()/2 - 102);
 		rightText.getText();
 		GridPane.setConstraints(rightText, 2, 0);
 		grid.getChildren().add(rightText);
@@ -162,8 +200,20 @@ class DirectoryViewer {
 		grid.getChildren().add(rightPath);
 		
 		GridPane.setConstraints(rightHelper.getTreeView(), 2, 1, 2, 1);
-		rightHelper.getTreeView().setPrefSize(window.getWidth()/2-30, 600);
+		rightHelper.getTreeView().setPrefSize(window.getWidth()/2-30, window.getHeight()-150);
 		grid.getChildren().add(rightHelper.getTreeView());
+		
+		statusLabel.setMinWidth(250);
+	    statusLabel.setTextFill(Color.BLUE);
+	    
+	    HBox progressPane = new HBox();
+	    progressPane.getChildren().addAll(label, progressBar, progressIndicator, statusLabel);
+	    progressPane.setSpacing(10);
+	    progressPane.setAlignment(Pos.CENTER);
+	    
+	    GridPane.setConstraints(progressPane, 0, 2, 4, 1);
+	    
+	    grid.getChildren().add(progressPane);
 		
 		/**
 		 * Event handlers for each button

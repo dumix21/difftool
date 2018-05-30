@@ -1,10 +1,10 @@
 package gui;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 
 import javafx.application.Platform;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
@@ -26,7 +26,7 @@ public class MenuBarFactory {
 	GridPane directoryPane = new GridPane();
 	GridPane filePane = new GridPane();
 	
-	public MenuBar getMenuBar(BorderPane layout, Stage window) {
+	public MenuBar getMenuBar(final BorderPane layout, final Stage window) {
 		MenuBar menuBar = new MenuBar();
 		// --- Menu File
 		Menu menuFile = new Menu("File");
@@ -64,7 +64,10 @@ public class MenuBarFactory {
 				optionDirectory = false;
 
 				FileViewer fileView = FileViewer.getInstance();
-				filePane = fileView.getDefaultFileView(window);
+				filePane = fileView.changePaneToInputs(window);
+				
+//				filePane = FileViewer.getInstance().changePaneToDiffs(window);
+//				layout.setCenter(filePane);
 
 				layout.setCenter(filePane);
 
@@ -136,12 +139,16 @@ public class MenuBarFactory {
 						Platform.runLater(new Runnable() {
 							@Override
 							public void run() {
+								/**
+								 * Comparison for chosen directories
+								 */
 								try {
-									/**
-									 * Comparison for chosen directories
-									 */
-									compare.getDiff(compare.getLeftDir(), compare.getRightDir());
-								} catch (IOException e) {
+									
+						            compare.getDiff(compare.getLeftDir(), compare.getRightDir());
+						                   
+									
+								} catch (Exception e) {
+									// TODO Auto-generated catch block
 									e.printStackTrace();
 								}
 								
@@ -159,6 +166,9 @@ public class MenuBarFactory {
 								 */
 								HashMap<String, String> newMap = compare.getMapDiff();
 								
+								directoryView.getProgressBar().setProgress(0);
+								directoryView.getProgressIndicator().setProgress(0);
+								
 								DirectoriesDifferences dd = new DirectoriesDifferences();
 								
 								TreeViewHelper treeHelper = new TreeViewHelper();
@@ -168,15 +178,46 @@ public class MenuBarFactory {
 								 * After the trees were filtered by differences, the new ones
 								 * will replace the old ones
 								 */
-								treeHelper.setTreeView((dd.markDifferences(auxView, newMap,
-										new File(directoryView.getRightText().toString()))));
+								dd.markDifferences(auxView,directoryView.leftHelper.getTreeView(), newMap, new File(directoryView.getRightText().toString()));
+//								treeHelper.setTreeView((dd.markDifferences(auxView, newMap,
+//										new File(directoryView.getRightText().toString()))));
+								treeHelper.setTreeView(dd.returningFirstTree());
 								directoryView.setRightHelper(treeHelper);
 
-								auxView = directoryView.leftHelper.getTreeView();
-								
-								treeHelper.setTreeView(dd.markDifferences(auxView, newMap,
-										new File(directoryView.getLeftText().toString())));
+//								auxView = directoryView.leftHelper.getTreeView();
+//								dd.markDifferences(auxView, newMap, new File(directoryView.getLeftText().toString()));
+//								treeHelper.setTreeView(dd.markDifferences(auxView, newMap,
+//										new File(directoryView.getLeftText().toString())));
+								treeHelper.setTreeView(dd.returningSecondTree());
 								directoryView.setLeftHelper(treeHelper);
+								
+								directoryView.getProgressBar().progressProperty().unbind();
+								directoryView.getProgressBar().progressProperty().bind(dd.progressProperty());
+								directoryView.getProgressIndicator().progressProperty().unbind();
+								 
+					               // Bind progress property.
+								directoryView.getProgressIndicator().progressProperty().bind(dd.progressProperty());
+					 
+					               // Unbind text property for Label.
+								directoryView.getStatusLabel().textProperty().unbind();
+					 
+					               // Bind the text property of Label
+					                // with message property of Task
+								directoryView.getStatusLabel().textProperty().bind(dd.messageProperty());
+								
+								dd.addEventHandler(WorkerStateEvent.WORKER_STATE_SUCCEEDED, //
+					                       new EventHandler<WorkerStateEvent>() {
+					 
+					                           @Override
+					                           public void handle(WorkerStateEvent t) {
+					                               directoryView.getStatusLabel().textProperty().unbind();
+					                               directoryView.getStatusLabel().setText("Loaded: " + DirectoriesComaprison.count);
+					                           }});
+								
+					            new Thread(dd).start();
+					            
+								
+								
 							}
 						});
 					} catch (Exception e) {

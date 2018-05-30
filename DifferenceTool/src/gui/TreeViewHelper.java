@@ -17,6 +17,7 @@ import javafx.util.StringConverter;
 
 public class TreeViewHelper {
 	TreeView<Object> treeView = new TreeView<>();
+	static int numberOfElements;
 	
 	/**
 	 * 
@@ -25,7 +26,8 @@ public class TreeViewHelper {
 	 * 
 	 * Recursive function used to traverse all directories/files from the parent directory
 	 */
-	public void createTree(File file, TreeItem<Object> parent) {
+	public void createTree(final File file, final TreeItem<Object> parent) {
+		numberOfElements++;
 	    if (file.isDirectory()) {
 	    	
 	        TreeItem<Object> treeItem = new TreeItem<>(file.getName(), getItemImage(file));
@@ -42,12 +44,12 @@ public class TreeViewHelper {
 	    }
 	}
 	
-	public void setTreeView(TreeView<Object> treeView) {
+	public void setTreeView(final TreeView<Object> treeView) {
 		this.treeView = treeView;
 		treeView.refresh();
 	}
 
-	public void displayTreeView(String inputDirectoryLocation) {
+	public void displayTreeView(final String inputDirectoryLocation) {
 	    /**
 	     * Creates the root item.
 	     */
@@ -94,7 +96,7 @@ public class TreeViewHelper {
 	        createTree(file, rootItem);
 	    }
 	    rootItem.setExpanded(true);
-
+	    treeView.refresh();
 	    treeView.setRoot(rootItem);
 	}
 
@@ -108,7 +110,7 @@ public class TreeViewHelper {
 	 * @return
 	 * This function returns an ImageView  which represents the icon of a specified file
 	 */
-	public ImageView getItemImage(File file) {
+	public ImageView getItemImage(final File file) {
 		javax.swing.Icon icon = FileSystemView.getFileSystemView().getSystemIcon( file );
 
         BufferedImage bufferedImage = new BufferedImage(

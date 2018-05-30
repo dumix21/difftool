@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class TextFileReader {
 	
-	public List<String> read(File file){
+	public List<String> read(final File file){
 		List<String> lines = new ArrayList<String>();
 		String line;
 		
