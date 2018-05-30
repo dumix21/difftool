@@ -2,23 +2,25 @@ package gui;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Set;
+import java.util.Map;
 
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 
-public class DirectoriesComaprison 
+public class DirectoriesComaprison
 {
 	File leftDir;
 	File rightDir;
 	TreeView<Object> leftTV;
 	TreeView<Object> rightTV;
+	
+	static int ind=0;
+	static int count;
 	
 	String[] matchFiles = {"only in", "different", "identical"};
 	HashMap<String, String> mapDiff = new HashMap<>();
@@ -31,7 +33,7 @@ public class DirectoriesComaprison
 		return leftTV;
 	}
 
-	public void setLeftTV(TreeView<Object> leftTV) {
+	public void setLeftTV(final TreeView<Object> leftTV) {
 		this.leftTV = leftTV;
 	}
 
@@ -39,7 +41,7 @@ public class DirectoriesComaprison
 		return rightTV;
 	}
 
-	public void setRightTV(TreeView<Object> rightTV) {
+	public void setRightTV(final TreeView<Object> rightTV) {
 		this.rightTV = rightTV;
 	}
 
@@ -47,7 +49,7 @@ public class DirectoriesComaprison
 		return leftDir;
 	}
 
-	public void setLeftDir(File leftDir) {
+	public void setLeftDir(final File leftDir) {
 		this.leftDir = leftDir;
 	}
 
@@ -55,28 +57,48 @@ public class DirectoriesComaprison
 		return rightDir;
 	}
 
-	public void setRightDir(File rightDir) {
+	public void setRightDir(final File rightDir) {
 		this.rightDir = rightDir;
 	}
 
-	public DirectoriesComaprison(File dir1, File dir2, TreeView<Object> t1, TreeView<Object> t2) {
+	public DirectoriesComaprison(final File dir1, final File dir2, final TreeView<Object> t1,final  TreeView<Object> t2) {
 		leftDir = dir1;
 		rightDir = dir2;
 		leftTV = t1;
 		leftRoot=leftTV.getRoot();
 		rightTV = t2;
 		rightRoot=rightTV.getRoot();
+		this.getFile(dir1.toPath().toString());
+		this.getFile(dir2.toPath().toString());
+		
+	}
+
+	private void getFile(String dirPath) {
+	    File f = new File(dirPath);
+	    File[] files = f.listFiles();
+
+	    if (files != null)
+	    for (int i = 0; i < files.length; i++) {
+	        File file = files[i];
+
+	        if (file.isDirectory()) {   
+	             getFile(file.getAbsolutePath()); 
+	        }
+	        else {
+	        	System.out.println(file.toPath());
+	        	count++;
+	        }
+	    }
 	}
 	
-	
-	public void getDiff(File dirA, File dirB) throws IOException
+	public void getDiff(final File dirA, final File dirB) throws Exception
 	{
 		File[] fileList1 = dirA.listFiles();
 		File[] fileList2 = dirB.listFiles();
 		
 		Arrays.sort(fileList1);
 		Arrays.sort(fileList2);
-		HashMap<String, File> map1;
+		HashMap<String, File> map1 = new HashMap<String, File>();
 		
 		/**
 		 * Creating a map based on the shortest number of files from an directory
@@ -85,7 +107,6 @@ public class DirectoriesComaprison
 		 */
 		if(fileList1.length < fileList2.length)
 		{
-			map1 = new HashMap<String, File>();
 			for(int i=0;i<fileList1.length;i++)
 			{
 				map1.put(fileList1[i].getName(),fileList1[i]);
@@ -95,7 +116,6 @@ public class DirectoriesComaprison
 		}
 		else
 		{
-			map1 = new HashMap<String, File>();
 			for(int i=0;i<fileList2.length;i++)
 			{
 				map1.put(fileList2[i].getName(),fileList2[i]);
@@ -104,7 +124,7 @@ public class DirectoriesComaprison
 		}
 	}
 	
-	public void compareNow(File[] fileArr, HashMap<String, File> map) throws IOException
+	public void compareNow(final File[] fileArr, final HashMap<String, File> map) throws Exception
 	{
 		for(int i=0;i<fileArr.length;i++)
 		{
@@ -145,6 +165,7 @@ public class DirectoriesComaprison
 //						System.out.println(fileArr[i].getName()+"\t\t"+"identical");
 						if(!mapDiff.containsKey(fileArr[i].getName())) {
 							mapDiff.put(fileArr[i].getName(), matchFiles[2]);
+							System.out.println(fileArr[i].getName() + "    "+matchFiles[2]);
 						}
 					}
 				}
@@ -173,13 +194,11 @@ public class DirectoriesComaprison
 				}
 			}
 		}
-		Set<String> set = map.keySet();
-		Iterator<String> it = set.iterator();
-		while(it.hasNext())
+		final Iterator <Map.Entry<String,File>> itMap = map.entrySet().iterator();
+		while(itMap.hasNext())
 		{
-			String n = it.next();
-			File fileFrmMap = map.get(n);
-			map.remove(n);
+			final File fileFrmMap = itMap.next().getValue();
+			itMap.remove();
 			if(fileFrmMap.isDirectory())
 			{
 				traverseDirectory(fileFrmMap);
@@ -198,7 +217,7 @@ public class DirectoriesComaprison
 		return mapDiff;
 	}
 
-	public void traverseDirectory(File dir)
+	public void traverseDirectory(final File dir) throws Exception
 	{
 		File[] list = dir.listFiles();
 		for(int k=0;k<list.length;k++)
@@ -209,6 +228,7 @@ public class DirectoriesComaprison
 			}
 			else
 			{
+				
 //				System.out.println(list[k].getName() +"\t\t"+"only in "+ list[k].getParent());
 				if(!mapDiff.containsKey(list[k].getName())) {
 					mapDiff.put(list[k].getName(), matchFiles[0]+" "+list[k].getParent());
@@ -217,7 +237,7 @@ public class DirectoriesComaprison
 		}
 	}
 	
-	public String checksum(File file) 
+	public String checksum(final File file) throws Exception 
 	{
 		try 
 		{

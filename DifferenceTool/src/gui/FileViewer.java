@@ -51,7 +51,7 @@ class FileViewer {
 		return leftText;
 	}
 
-	public void setLeftText(String leftText) {
+	public void setLeftText(final String leftText) {
 		this.leftText = new TextField(leftText);
 	}
 
@@ -59,7 +59,7 @@ class FileViewer {
 		return rightText;
 	}
 
-	public void setRightText(String rightText) {
+	public void setRightText(final String rightText) {
 		this.rightText = new TextField(rightText);
 	}
 
@@ -86,11 +86,11 @@ class FileViewer {
 	}
 	
 	//Default view for application start up
-	public GridPane getDefaultFileView(Stage window) {
+	public GridPane getDefaultFileView(final Stage window) {
 		return getInputsViewState(window);
 	}
 	
-	private GridPane getDiffsViewState(Stage window, TextFlow leftOutput, TextFlow rightOutput, TextFlow aggreggateOutput) {
+	private GridPane getDiffsViewState(final Stage window, final TextFlow leftOutput, final TextFlow rightOutput, final TextFlow aggreggateOutput) {
 		
 		StackPane leftTextOutput = new StackPane();
 		StackPane rightTextOutput = new StackPane();	
@@ -146,12 +146,15 @@ class FileViewer {
 	 * 2. Two text fields in which is set the corresponding path
 	 * 3. Two text areas for showing corresponding texts
 	 */
-	private GridPane getInputsViewState(Stage window) {
+	private GridPane getInputsViewState(final Stage window) {
 		leftTextArea = new TextArea();
 		rightTextArea = new TextArea();
 		
 		leftText.setPromptText("Introduce the path here");
 		leftText.setPrefColumnCount(52);
+//		leftText.setMaxWidth(window.getWidth()/2 - 103);
+//		leftText.setMinWidth(window.getWidth()/2 - 103);
+		
 		leftText.getText();
 		GridPane.setConstraints(leftText, 0, 0);
 		grid.getChildren().add(leftText);
@@ -168,6 +171,9 @@ class FileViewer {
 		
 		rightText.setPromptText("Introduce the path here");
 		rightText.setPrefColumnCount(52);
+//		rightText.setMaxWidth(window.getWidth()/2 - 103);
+//		rightText.setMinWidth(window.getWidth()/2 - 103);
+		
 		rightText.getText();
 		GridPane.setConstraints(rightText, 2, 0);
 		grid.getChildren().add(rightText);		
@@ -216,13 +222,13 @@ class FileViewer {
 	}
 	
 	
-	public GridPane changePaneToInputs(Stage window) {		
+	public GridPane changePaneToInputs(final Stage window) {		
 		initialize();
 		viewState = ViewState.SHOW_INPUTS;
 		return getInputsViewState(window);
 	}
 	
-	public GridPane changePaneToDiffs(Stage window) {
+	public GridPane changePaneToDiffs(final Stage window) {
 		initialize();
 		viewState = ViewState.SHOW_DIFFS;
 		

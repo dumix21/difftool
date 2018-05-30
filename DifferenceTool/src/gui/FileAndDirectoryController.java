@@ -30,7 +30,7 @@ public class FileAndDirectoryController {
 			return selectedDirectory;
 		}
 
-		public void setSelectedDirectory(File selectedDirectory) {
+		public void setSelectedDirectory(final File selectedDirectory) {
 			this.selectedDirectory = selectedDirectory;
 		}
 		
@@ -43,7 +43,7 @@ public class FileAndDirectoryController {
 		 * 
 		 * Handler for directories
 		 */
-		public FileAndDirectoryController(TextField text, TreeViewHelper helper, Stage window,TreeItem<Object> parent) {
+		public FileAndDirectoryController(final TextField text, final TreeViewHelper helper, final Stage window, final TreeItem<Object> parent) {
 			EH = new EventHandler<ActionEvent>() {
 
 				@Override
@@ -79,7 +79,7 @@ public class FileAndDirectoryController {
 		 * 
 		 * Handler for files
 		 */
-		public FileAndDirectoryController(TextField text, TextArea textArea, Stage window) {
+		public FileAndDirectoryController(final TextField text, final TextArea textArea, final Stage window) {
 			EH = new EventHandler<ActionEvent>() {
 
 				@Override
@@ -108,7 +108,7 @@ public class FileAndDirectoryController {
 		 * 
 		 * Handler for directories (copy path method)
 		 */
-		public FileAndDirectoryController(String textName, TreeViewHelper helper, Stage window,TreeItem<Object> parent) {
+		public FileAndDirectoryController(final String textName, final TreeViewHelper helper, final Stage window, final TreeItem<Object> parent) {
 			KeyEH = new EventHandler<KeyEvent>() {
 
 				@Override
@@ -162,7 +162,7 @@ public class FileAndDirectoryController {
 		 * 
 		 * Handler for files ( copy path method)
 		 */
-		public FileAndDirectoryController(String text, Stage window, TextArea textArea) {
+		public FileAndDirectoryController(final String text, final Stage window, final TextArea textArea) {
 			KeyEH = new EventHandler<KeyEvent>() {
 
 				@Override
