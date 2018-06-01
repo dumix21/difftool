@@ -11,23 +11,23 @@ import java.util.List;
  * 
  * @author Marius
  *
- * Used to read a file
+ *         Used to read a file
  */
 public class TextFileReader {
-	
-	public List<String> read(final File file){
+
+	public List<String> read(final File file) {
 		List<String> lines = new ArrayList<String>();
 		String line;
-		
+
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(file));
-			
-			while((line = br.readLine())!=null) {
+
+			while ((line = br.readLine()) != null) {
 				lines.add(line);
 			}
 			br.close();
-		}catch(IOException ex) {
-			
+		} catch (IOException ex) {
+
 		}
 		return lines;
 	}
