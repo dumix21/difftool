@@ -23,7 +23,8 @@ import javafx.stage.Stage;
 public class MenuBarFactory {
 
 	boolean optionDirectory = false; // For file false; For directories true
-	DirectoryViewer directoryView = DirectoryViewer.getInstance();;
+	DirectoryViewer directoryView = DirectoryViewer.getInstance();
+	ComparisonProperties cpProperties;
 	GridPane directoryPane = new GridPane();
 	GridPane filePane = new GridPane();
 	boolean isDirectory = false;
@@ -242,15 +243,8 @@ public class MenuBarFactory {
 
 			@Override
 			public void handle(ActionEvent event) {
-				ComparisonProperties cp = new ComparisonProperties();
-				Stage st = new Stage();
-				try {
-					cp.start(st);
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
+				cpProperties = ComparisonProperties.getInstance();
+				cpProperties.getPrimaryStage().show();
 			}
 			
 		});
