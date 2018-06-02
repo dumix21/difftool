@@ -12,6 +12,7 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioMenuItem;
+import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.TreeView;
 import javafx.scene.control.Alert.AlertType;
@@ -25,12 +26,18 @@ public class MenuBarFactory {
 	DirectoryViewer directoryView = DirectoryViewer.getInstance();;
 	GridPane directoryPane = new GridPane();
 	GridPane filePane = new GridPane();
+	boolean isDirectory = false;
+	MenuItem properties = new MenuItem("Properties for Directory");
+	MenuBar menuBar;
+	Menu menuFile;
+	Menu menuOptions;
+	
 
 	public MenuBar getMenuBar(final BorderPane layout, final Stage window) {
-		MenuBar menuBar = new MenuBar();
+		menuBar = new MenuBar();
 		// --- Menu File
-		Menu menuFile = new Menu("File");
-		Menu menuOptions = new Menu("Options");
+		menuFile = new Menu("File");
+		menuOptions = new Menu("Options");
 		Menu menuHelp = new Menu("Help");
 		MenuItem about = new MenuItem("About");
 		menuHelp.getItems().add(about);
@@ -40,12 +47,13 @@ public class MenuBarFactory {
 		menuFile.getItems().add(compare);
 		RadioMenuItem file = new RadioMenuItem("File");
 		RadioMenuItem folder = new RadioMenuItem("Directory");
+		enableProperties(isDirectory);
 		ToggleGroup tGroup = new ToggleGroup();
 
 		// By default, the tool is set up for files type
 		file.setSelected(true);
 
-		menuOptions.getItems().addAll(file, folder);
+		menuOptions.getItems().addAll(file, folder, new SeparatorMenuItem(), properties);
 
 		file.setToggleGroup(tGroup);
 		folder.setToggleGroup(tGroup);
@@ -59,7 +67,8 @@ public class MenuBarFactory {
 
 			@Override
 			public void handle(ActionEvent event) {
-
+				
+				enableProperties(false);
 				layout.getChildren().remove(directoryPane);
 				optionDirectory = false;
 
@@ -84,7 +93,7 @@ public class MenuBarFactory {
 
 			@Override
 			public void handle(ActionEvent event) {
-
+				enableProperties(true);
 				layout.getChildren().remove(filePane);
 				optionDirectory = true;
 
@@ -228,7 +237,30 @@ public class MenuBarFactory {
 			}
 
 		});
+		
+		properties.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				ComparisonProperties cp = new ComparisonProperties();
+				Stage st = new Stage();
+				try {
+					cp.start(st);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}
+			
+		});
 
 		return menuBar;
+	}
+	
+	public void enableProperties(final boolean prop) {
+		isDirectory = prop;
+		properties.setDisable(!prop);
+		
 	}
 }
