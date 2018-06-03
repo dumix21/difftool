@@ -6,17 +6,23 @@ class ImageFactory{
 
 	private static ImageFactory image_instance = null;
 
-	final ImageViewType only_in = new ImageViewType(new Image("missing.png"));
-	final ImageViewType identical = new ImageViewType(new Image("ok.png"));
-	final ImageViewType different = new ImageViewType(new Image("warning.gif"));
+	final Image only_in = new Image("missing.png");
+	final Image identical = new Image("ok.png");
+	final Image different = new Image("warning.gif");
+	final Image diffFolder = new Image("differentFolder.png");
+	final Image identicFolder = new Image("identicalFolder.png");
 
-	public ImageViewType getImage(final DIFFTYPE type) {
-		if (type.equals(DIFFTYPE.ONLY_IN)) {
+	public Image getImage(final DIFFTYPE type, final boolean isFile) {
+		if (type.equals(DIFFTYPE.ONLY_IN) && isFile) {
 			return only_in;
-		} else if (type.equals(DIFFTYPE.IDENTICAL)) {
+		} else if (type.equals(DIFFTYPE.IDENTICAL) && isFile) {
 			return identical;
-		} else {
+		} else if(type.equals(DIFFTYPE.DIFFERENT) && isFile) {
 			return different;
+		} else if (type.equals(DIFFTYPE.IDENTICAL) && !isFile) {
+			return identicFolder;
+		} else {
+			return diffFolder;
 		}
 	}
 

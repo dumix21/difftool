@@ -88,13 +88,13 @@ public class DirectoriesComaprison {
 			}
 	}
 
-	public void getDiff(final File dirA, final File dirB) throws Exception {
+	public boolean getDiff(final File dirA, final File dirB) throws Exception {
 		File[] fileList1 = dirA.listFiles();
 		File[] fileList2 = dirB.listFiles();
 
 		Arrays.sort(fileList1);
 		Arrays.sort(fileList2);
-		HashMap<String, File> map1 = new HashMap<String, File>();
+		FolderMap map1 = new FolderMap();
 
 		/**
 		 * Creating a map based on the shortest number of files from an directory The
@@ -113,9 +113,22 @@ public class DirectoriesComaprison {
 			}
 			compareNow(fileList1, map1);
 		}
+		if(map1.IsEqual()) {
+			if (!mapDiff.containsKey(dirA.getName())) {
+				mapDiff.put(dirA.getName(), DIFFTYPE.IDENTICAL);
+			}
+		}else {
+			if (!mapDiff.containsKey(dirA.getName())) {
+				mapDiff.put(dirA.getName(), DIFFTYPE.DIFFERENT);
+			}
+		}
+
+		System.out.println(dirB.toString() + " "+map1.IsEqual());
+		System.out.println(dirA.toString() + " "+map1.IsEqual());
+		return map1.IsEqual();
 	}
 
-	public void compareNow(final File[] fileArr, final HashMap<String, File> map) throws Exception {
+	public boolean compareNow(final File[] fileArr, final FolderMap map) throws Exception {
 		for (int i = 0; i < fileArr.length; i++) {
 			String fName = fileArr[i].getName();
 			File fComp = map.get(fName);
@@ -140,6 +153,7 @@ public class DirectoriesComaprison {
 					if (!this.Equals(cSum1, cSum2)) {
 						// System.out.println(fileArr[i].getName()+"\t\t"+ "different");
 						if (!mapDiff.containsKey(fileArr[i].getName())) {
+							map.SetNotEqual();
 							mapDiff.put(fileArr[i].getName(), DIFFTYPE.DIFFERENT);
 						}
 					} else {
@@ -164,11 +178,13 @@ public class DirectoriesComaprison {
 					 */
 					// System.out.println(fileArr[i].getName()+"\t\t"+"only in
 					// "+fileArr[i].getParent());
+					map.SetNotEqual();
 					if (!mapDiff.containsKey(fileArr[i].getName())) {
 						mapDiff.put(fileArr[i].getName(), DIFFTYPE.ONLY_IN);// +" "+fileArr[i].getParent());
 					}
 				}
 			}
+			
 		}
 		final Iterator<Map.Entry<String, File>> itMap = map.entrySet().iterator();
 		while (itMap.hasNext()) {
@@ -178,12 +194,13 @@ public class DirectoriesComaprison {
 				traverseDirectory(fileFrmMap);
 			} else {
 				// System.out.println(fileFrmMap.getName() +"\t\t"+"only in "+
-				// fileFrmMap.getParent());
 				if (!mapDiff.containsKey(fileFrmMap.getName())) {
 					mapDiff.put(fileFrmMap.getName(), DIFFTYPE.ONLY_IN);// matchFiles[0]+" "+fileFrmMap.getParent());
 				}
 			}
 		}
+		return map.IsEqual();
+		
 	}
 
 	public HashMap<String, DIFFTYPE> getMapDiff() {
@@ -191,6 +208,9 @@ public class DirectoriesComaprison {
 	}
 
 	public void traverseDirectory(final File dir) throws Exception {
+		if (!mapDiff.containsKey(dir.getName())) {
+			mapDiff.put(dir.getName(), DIFFTYPE.NEW_DIR);
+		}
 		File[] list = dir.listFiles();
 		for (int k = 0; k < list.length; k++) {
 			if (list[k].isDirectory()) {
@@ -238,4 +258,5 @@ public class DirectoriesComaprison {
 
 		return true;
 	}
+	
 }

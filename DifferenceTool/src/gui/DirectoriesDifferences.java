@@ -7,13 +7,16 @@ import java.util.List;
 import javafx.concurrent.Task;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.image.ImageView;
 
 public class DirectoriesDifferences extends Task<List<String>> {
-	ImageFactory image = new ImageFactory();
+	ImageFactory image = ImageFactory.getInstance();
 	
 	static File path;
 	TreeView<Object> tree;
 	TreeView<Object> secondTree;
+	TreeItem<Object> leftRoot;
+	TreeItem<Object> rightRoot;
 	HashMap<String, DIFFTYPE> diffMap;
 	static int maxValue = DirectoriesComaprison.count;
 	static int currentValue = 0;
@@ -26,11 +29,13 @@ public class DirectoriesDifferences extends Task<List<String>> {
 		DirectoriesDifferences.path = path;
 	}
 
-	public void markDifferences(final TreeView<Object> tree, final TreeView<Object> second,
+	public void markDifferences(TreeView<Object> tree, TreeView<Object> second,
 			final HashMap<String, DIFFTYPE> diffMap, final File f) {
 		this.tree = tree;
 		this.diffMap = diffMap;
 		this.secondTree = second;
+		leftRoot=tree.getRoot();
+		rightRoot=secondTree.getRoot();
 	}
 
 	public TreeView<Object> returningFirstTree() {
@@ -52,37 +57,47 @@ public class DirectoriesDifferences extends Task<List<String>> {
 	 *            parent directory
 	 * @throws Exception
 	 */
-	public void diffTree(final TreeItem<Object> parent, final HashMap<String, DIFFTYPE> differencesMap)
+	public void diffTree(TreeItem<Object> parent, final HashMap<String, DIFFTYPE> differencesMap)
 			throws Exception {
 		/**
-		 * This function is used only for showing files differences Leaf = File
+		 * This function is used only for showing files differences Leaf = File || empty directory
 		 */
 		if (parent.isLeaf()) {
 
 			/**
-			 * A new graphic will be set depending of value map entry
+			 * A new graphic will be set depending of map value entry
 			 */
 
 			DIFFTYPE type = differencesMap.get(parent.getValue());
-			if (type == null) {
+			if (type == null && parent.getParent().getGraphic().equals(parent.getGraphic())) {
 				System.out.println("Eroare " + parent.getValue());
 			} else if (type.equals(DIFFTYPE.IDENTICAL)) {
-				parent.setGraphic(image.getImage(DIFFTYPE.IDENTICAL).clone());
+				parent.setGraphic(new ImageView(image.getImage(DIFFTYPE.IDENTICAL, true)));
 			} else if (type.equals(DIFFTYPE.ONLY_IN)) {
-				parent.setGraphic(image.getImage(DIFFTYPE.ONLY_IN).clone());
+				parent.setGraphic(new ImageView(image.getImage(DIFFTYPE.ONLY_IN, true)));
 			} else if (type.equals(DIFFTYPE.DIFFERENT)) {
-				parent.setGraphic(image.getImage(DIFFTYPE.DIFFERENT).clone());
+				parent.setGraphic(new ImageView(image.getImage(DIFFTYPE.DIFFERENT, true)));
 			}
 
 			currentValue++;
 			this.load(parent.getValue().toString());
 			this.updateProgress(currentValue, maxValue);
+			
 		} else {
-			if (parent.getChildren() != null) {
+			if(!rootCheck(parent)) {
+				DIFFTYPE tip = differencesMap.get(parent.getValue());
+				if(tip.equals(DIFFTYPE.DIFFERENT)) {
+					parent.setGraphic(new ImageView(image.getImage(DIFFTYPE.DIFFERENT, false)));
+				}else if(tip.equals(DIFFTYPE.IDENTICAL)) {
+					parent.setGraphic(new ImageView(image.getImage(DIFFTYPE.IDENTICAL, false)));
+				}else {
+					//TODO for new folders
+				}
+			}
+			
 				for (TreeItem<Object> treeItem : parent.getChildren()) {
 					diffTree(treeItem, differencesMap);
 				}
-			}
 		}
 
 	}
@@ -97,6 +112,13 @@ public class DirectoriesDifferences extends Task<List<String>> {
 	private void load(String file) throws Exception {
 		this.updateMessage("Loading: " + file);
 		Thread.sleep(200);
+	}
+	
+	public boolean rootCheck(TreeItem<Object> root) {
+		if(root.equals(leftRoot)||root.equals(rightRoot)) {
+			return true;
+		}
+		return false;
 	}
 
 }
