@@ -2,11 +2,12 @@ package gui;
 
 import java.io.File;
 
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
 import javafx.scene.input.KeyCode;
@@ -84,21 +85,28 @@ public class FileAndDirectoryController {
 	 * 
 	 *            Handler for files
 	 */
-	public FileAndDirectoryController(final TextField text, final TextArea textArea, final Stage window) {
+	public FileAndDirectoryController(final TextField text, @SuppressWarnings("rawtypes") final TableView textArea, final Stage window, ObservableList<FileText> oList) {
 		EH = new EventHandler<ActionEvent>() {
 
+			@SuppressWarnings("unchecked")
 			@Override
 			public void handle(ActionEvent event) {
-				TextFileReader reader = new TextFileReader();
+//				TextFileReader reader = new TextFileReader();
 				FileChooser fileChoose;
 				fileChoose = new FileChooser();
 				File file = fileChoose.showOpenDialog(window);
 				text.setText(file.getAbsolutePath());
-
-				textArea.setText(null);
-				for (String s : reader.read(file)) {
-					textArea.appendText(s + "\n");
+				
+				FileTextTable ftt = new FileTextTable();
+				ftt.setNumber(textArea, file);
+				for(FileText f:ftt.getData()) {
+					oList.add(f);
+					System.out.println(f.toString());
 				}
+//				textArea.setText(null);
+//				for (String s : reader.read(file)) {
+//					textArea.appendText(s + "\n");
+//				}
 			}
 
 		};
@@ -165,9 +173,10 @@ public class FileAndDirectoryController {
 	 * 
 	 *            Handler for files ( copy path method)
 	 */
-	public FileAndDirectoryController(final String text, final Stage window, final TextArea textArea) {
+	public FileAndDirectoryController(final String text, final Stage window, @SuppressWarnings("rawtypes") final TableView textArea, ObservableList<FileText> oList) {
 		KeyEH = new EventHandler<KeyEvent>() {
 
+			@SuppressWarnings("unchecked")
 			@Override
 			public void handle(KeyEvent event) {
 				if (event.getCode().equals(KeyCode.ENTER)) {
@@ -181,12 +190,10 @@ public class FileAndDirectoryController {
 					}
 					file = new File(path);
 
-					TextFileReader reader = new TextFileReader();
-
-					textArea.setText(null);
-
-					for (String s : reader.read(file)) {
-						textArea.appendText(s + "\n");
+					FileTextTable ftt = new FileTextTable();
+					ftt.setNumber(textArea, file);
+					for(FileText f:ftt.getData()) {
+						oList.add(f);
 					}
 
 				}

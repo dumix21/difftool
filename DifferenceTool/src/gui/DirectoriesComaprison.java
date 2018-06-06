@@ -115,11 +115,11 @@ public class DirectoriesComaprison {
 		}
 		if(map1.IsEqual()) {
 			if (!mapDiff.containsKey(dirA.getName())) {
-				mapDiff.put(dirA.getName(), DIFFTYPE.IDENTICAL);
+				mapDiff.put(dirA.getName(), DIFFTYPE.IDENTICAL_DIR);
 			}
 		}else {
 			if (!mapDiff.containsKey(dirA.getName())) {
-				mapDiff.put(dirA.getName(), DIFFTYPE.DIFFERENT);
+				mapDiff.put(dirA.getName(), DIFFTYPE.DIFFERENT_DIR);
 			}
 		}
 
