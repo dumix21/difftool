@@ -3,6 +3,8 @@ package algorithms.diff;
 import java.util.Vector;
 
 import algorithms.lcs.*;
+import gui.FileText;
+import javafx.collections.ObservableList;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
@@ -32,10 +34,17 @@ public class Diff {
         
         //Prin aceasta supraincarcare in primul text se coloreaza insertiile
         //iar in al doilea text deletiile
-        public boolean processDiff(final String sComp1,final String sComp2, TextFlow s1_output, TextFlow s2_output){
-            
-            String s1 = options.processInputs(sComp1);
-            String s2 = options.processInputs(sComp2);                        
+        public boolean processDiff(final ObservableList<FileText> dataLeft,final ObservableList<FileText> dataRight, TextFlow s1_output, TextFlow s2_output){
+        	String s = null;
+        	for(FileText ft: dataLeft) {
+        		s+=ft+"/n";
+        	}
+        	String ss = null;
+        	for(FileText ft: dataRight) {
+        		ss+=ft+"/n";
+        	}
+            String s1 = options.processInputs(s);
+            String s2 = options.processInputs(ss);
             
         //Se extrag diferentele dintre cele doua siruri    
             processWithLCS(s1,s2);       
@@ -61,10 +70,17 @@ public class Diff {
     }
         
         //Prin aceasta supraincarcare se genereaza meta-sirul caracteristic LCS
-        public boolean processDiff(final String sComp1,final String sComp2, TextFlow output){
-
-            String s1 = options.processInputs(sComp1);
-            String s2 = options.processInputs(sComp2); 
+        public boolean processDiff(final ObservableList<FileText> sComp1,final ObservableList<FileText>sComp2, TextFlow output){
+        	String s = null;
+        	for(FileText ft: sComp1) {
+        		s+=ft+"/n";
+        	}
+        	String ss = null;
+        	for(FileText ft:sComp2) {
+        		ss+=ft+"/n";
+        	}
+            String s1 = options.processInputs(s);
+            String s2 = options.processInputs(ss); 
             
             Vector<LCS.ExtendedChar> LCSString = computeLCSString(s1, s2);
                         

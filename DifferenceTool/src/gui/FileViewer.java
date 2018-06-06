@@ -8,14 +8,15 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import algorithms.diff.Diff;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
+import javafx.scene.control.TableView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -35,8 +36,21 @@ class FileViewer {
 
 	private GridPane grid;
 
-	private TextArea leftTextArea;
-	private TextArea rightTextArea;
+	@SuppressWarnings("rawtypes")
+	private TableView leftTableView;
+	@SuppressWarnings("rawtypes")
+	private TableView rightTableView;
+	
+	 private  ObservableList<FileText> dataLeft;
+	 private  ObservableList<FileText> dataRight;
+
+	public void setDataLeft(ObservableList<FileText> dataLeft) {
+		this.dataLeft = dataLeft;
+	}
+
+	public void setDataRight(ObservableList<FileText> dataRight) {
+		this.dataRight = dataRight;
+	}
 
 	private TextFlow leftOutput;
 	private TextFlow rightOutput;
@@ -144,8 +158,8 @@ class FileViewer {
 	 *         corresponding path 3. Two text areas for showing corresponding texts
 	 */
 	private GridPane getInputsViewState(final Stage window) {
-		leftTextArea = new TextArea();
-		rightTextArea = new TextArea();
+		leftTableView = new TableView<>();
+		rightTableView = new TableView<>();
 
 		leftText.setPromptText("Introduce the path here");
 		leftText.setPrefColumnCount(52);
@@ -160,9 +174,9 @@ class FileViewer {
 		GridPane.setConstraints(leftPath, 1, 0);
 		grid.getChildren().add(leftPath);
 
-		GridPane.setConstraints(leftTextArea, 0, 1, 2, 1);
-		grid.getChildren().add(leftTextArea);
-		leftTextArea.setPrefSize(window.getWidth() / 2 - 30, 600);
+		GridPane.setConstraints(leftTableView, 0, 1, 2, 1);
+		grid.getChildren().add(leftTableView);
+		leftTableView.setPrefSize(window.getWidth() / 2 - 30, 600);
 
 		rightText.setPromptText("Introduce the path here");
 		rightText.setPrefColumnCount(52);
@@ -177,9 +191,9 @@ class FileViewer {
 		GridPane.setConstraints(rightPath, 3, 0);
 		grid.getChildren().add(rightPath);
 
-		GridPane.setConstraints(rightTextArea, 2, 1, 2, 1);
-		rightTextArea.setPrefSize(window.getWidth() / 2 - 30, 600);
-		grid.getChildren().add(rightTextArea);
+		GridPane.setConstraints(rightTableView, 2, 1, 2, 1);
+		rightTableView.setPrefSize(window.getWidth() / 2 - 30, 600);
+		grid.getChildren().add(rightTableView);
 
 		Button previous = new Button("<< Previous");
 		Group bg = new Group();
@@ -201,16 +215,16 @@ class FileViewer {
 		/**
 		 * Event handler for each button
 		 */
-		FileAndDirectoryController leftController = new FileAndDirectoryController(leftText, leftTextArea, window);
+		FileAndDirectoryController leftController = new FileAndDirectoryController(leftText, leftTableView, window, dataLeft);
 		leftPath.setOnAction(leftController.getHandler());
 
-		FileAndDirectoryController rightController = new FileAndDirectoryController(rightText, rightTextArea, window);
+		FileAndDirectoryController rightController = new FileAndDirectoryController(rightText, rightTableView, window, dataRight);
 		rightPath.setOnAction(rightController.getHandler());
 
-		FileAndDirectoryController leftLink = new FileAndDirectoryController("left", window, leftTextArea);
+		FileAndDirectoryController leftLink = new FileAndDirectoryController("left", window, leftTableView, dataLeft);
 		leftText.setOnKeyPressed(leftLink.getKeyHandler());
 
-		FileAndDirectoryController rightLink = new FileAndDirectoryController("right", window, rightTextArea);
+		FileAndDirectoryController rightLink = new FileAndDirectoryController("right", window, rightTableView, dataRight);
 		rightText.setOnKeyPressed(rightLink.getKeyHandler());
 
 		return grid;
@@ -236,8 +250,8 @@ class FileViewer {
 		ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(2);
 
 		List<Callable<Boolean>> tasks = new ArrayList<>();
-		tasks.add(() -> d1.processDiff(leftTextArea.getText(), rightTextArea.getText(), leftOutput, rightOutput));
-		tasks.add(() -> d2.processDiff(leftTextArea.getText(), rightTextArea.getText(), aggregateOutout));
+		tasks.add(() -> d1.processDiff(dataLeft, dataRight, leftOutput, rightOutput));
+		tasks.add(() -> d2.processDiff(dataLeft, dataRight, aggregateOutout));
 		try {
 			List<Future<Boolean>> comparasions = executor.invokeAll(tasks);
 			comparasions.parallelStream().forEach(c -> {

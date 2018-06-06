@@ -69,14 +69,14 @@ public class DirectoriesDifferences extends Task<List<String>> {
 			 */
 
 			DIFFTYPE type = differencesMap.get(parent.getValue());
-			if (type == null && parent.getParent().getGraphic().equals(parent.getGraphic())) {
-				System.out.println("Eroare " + parent.getValue());
+			if (type.equals(DIFFTYPE.NEW_DIR)) {
+				parent.setGraphic(new ImageView(image.getImage(DIFFTYPE.EMPTY_DIR)));
 			} else if (type.equals(DIFFTYPE.IDENTICAL)) {
-				parent.setGraphic(new ImageView(image.getImage(DIFFTYPE.IDENTICAL, true)));
+				parent.setGraphic(new ImageView(image.getImage(DIFFTYPE.IDENTICAL)));
 			} else if (type.equals(DIFFTYPE.ONLY_IN)) {
-				parent.setGraphic(new ImageView(image.getImage(DIFFTYPE.ONLY_IN, true)));
+				parent.setGraphic(new ImageView(image.getImage(DIFFTYPE.ONLY_IN)));
 			} else if (type.equals(DIFFTYPE.DIFFERENT)) {
-				parent.setGraphic(new ImageView(image.getImage(DIFFTYPE.DIFFERENT, true)));
+				parent.setGraphic(new ImageView(image.getImage(DIFFTYPE.DIFFERENT)));
 			}
 
 			currentValue++;
@@ -86,12 +86,12 @@ public class DirectoriesDifferences extends Task<List<String>> {
 		} else {
 			if(!rootCheck(parent)) {
 				DIFFTYPE tip = differencesMap.get(parent.getValue());
-				if(tip.equals(DIFFTYPE.DIFFERENT)) {
-					parent.setGraphic(new ImageView(image.getImage(DIFFTYPE.DIFFERENT, false)));
-				}else if(tip.equals(DIFFTYPE.IDENTICAL)) {
-					parent.setGraphic(new ImageView(image.getImage(DIFFTYPE.IDENTICAL, false)));
+				if(tip.equals(DIFFTYPE.DIFFERENT_DIR)) {
+					parent.setGraphic(new ImageView(image.getImage(DIFFTYPE.DIFFERENT_DIR)));
+				}else if(tip.equals(DIFFTYPE.IDENTICAL_DIR)) {
+					parent.setGraphic(new ImageView(image.getImage(DIFFTYPE.IDENTICAL_DIR)));
 				}else {
-					//TODO for new folders
+					parent.setGraphic(new ImageView(image.getImage(DIFFTYPE.NEW_DIR)));
 				}
 			}
 			

@@ -9,20 +9,27 @@ class ImageFactory{
 	final Image only_in = new Image("missing.png");
 	final Image identical = new Image("ok.png");
 	final Image different = new Image("warning.gif");
-	final Image diffFolder = new Image("differentFolder.png");
-	final Image identicFolder = new Image("identicalFolder.png");
+	
+	final Image identicFolder = new Image("folderOk.png");
+	final Image missingFolder = new Image("ms.png");
+	final Image emptyFolder = new Image("zero.png");
+	final Image diffFolder = new Image("ms.png");
 
-	public Image getImage(final DIFFTYPE type, final boolean isFile) {
-		if (type.equals(DIFFTYPE.ONLY_IN) && isFile) {
+	public Image getImage(final DIFFTYPE type) {
+		if (type.equals(DIFFTYPE.ONLY_IN)) {
 			return only_in;
-		} else if (type.equals(DIFFTYPE.IDENTICAL) && isFile) {
+		} else if (type.equals(DIFFTYPE.IDENTICAL)) {
 			return identical;
-		} else if(type.equals(DIFFTYPE.DIFFERENT) && isFile) {
+		} else if(type.equals(DIFFTYPE.DIFFERENT)) {
 			return different;
-		} else if (type.equals(DIFFTYPE.IDENTICAL) && !isFile) {
+		} else if (type.equals(DIFFTYPE.IDENTICAL_DIR)) {
 			return identicFolder;
-		} else {
+		}else if(type.equals(DIFFTYPE.EMPTY_DIR)) {
+			return emptyFolder;
+		}else if(type.equals(DIFFTYPE.DIFFERENT_DIR)) {
 			return diffFolder;
+		}else {
+			return emptyFolder;
 		}
 	}
 
